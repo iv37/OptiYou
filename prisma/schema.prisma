@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlanTier {
+  FREE
+  PREMIUM
+}
+
+enum UploadType {
+  FRONT_FACE
+  SIDE_FACE
+  SKIN_CLOSEUP
+  HAIRLINE
+}
+
+enum AnalysisKind {
+  FACIAL
+  SKINCARE
+  HAIR
+  BODY
+  LIFESTYLE
+}
+
+enum AnalysisConfidence {
+  CALCULATED
+  RULE_BASED
+  SIMULATED_AI
+}
+
+model User {
+  id              String           @id @default(cuid())
+  authId          String           @unique
+  email           String           @unique
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  profile         Profile?
+  goals           UserGoal[]
+  uploads         UploadedMedia[]
+  analysisRuns    AnalysisResult[]
+  recommendations Recommendation[]
+  progressEntries ProgressEntry[]
+  access          PremiumAccess?
+}
+
+model Profile {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  fullName             String
+  age                  Int
+  gender               String
+  heightCm             Int
+  weightKg             Float
+  skinType             String
+  skinConcerns         String[]
+  hairThickness        String
+  hairLength           String
+  hairConcerns         String[]
+  sleepHours           Float
+  hydrationLiters      Float
+  exerciseDays         Int
+  dietQuality          String
+  calorieIntake        Int?
+  onboardingCompleted  Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Goal {
+  id          String     @id @default(cuid())
+  key         String     @unique
+  label       String
+  description String
+  users       UserGoal[]
+}
+
+model UserGoal {
+  id      String @id @default(cuid())
+  userId  String
+  goalId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal    Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, goalId])
+}
+
+model UploadedMedia {
+  id          String     @id @default(cuid())
+  userId      String
+  type        UploadType
+  storagePath String
+  publicUrl   String
+  capturedAt  DateTime
+  createdAt   DateTime   @default(now())
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AnalysisResult {
+  id           String             @id @default(cuid())
+  userId       String
+  kind         AnalysisKind
+  title        String
+  summary      String
+  priority     String
+  confidence   AnalysisConfidence
+  payload      Json
+  createdAt    DateTime           @default(now())
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Recommendation {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  category    String
+  payload     Json
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ProgressEntry {
+  id                   String   @id @default(cuid())
+  userId               String
+  loggedAt             DateTime @default(now())
+  weightKg             Float?
+  bodyFatEstimate      Float?
+  skinClarityScore     Int?
+  groomingScore        Int?
+  hydrationScore       Int?
+  notes                String?
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PremiumAccess {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  tier          PlanTier @default(FREE)
+  status        String   @default("inactive")
+  renewsAt      DateTime?
+  featureFlags  String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

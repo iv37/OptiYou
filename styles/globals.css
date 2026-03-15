@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f5f1ea;
+  --surface: rgba(255, 255, 255, 0.78);
+  --surface-strong: #fffdf9;
+  --foreground: #16130f;
+  --muted: #6f675d;
+  --muted-strong: #4b453f;
+  --line: rgba(73, 62, 47, 0.12);
+  --primary: #1d4d43;
+  --primary-foreground: #f5f1ea;
+  --accent: #c6a56d;
+  --accent-soft: rgba(198, 165, 109, 0.16);
+  --danger: #9b4d3f;
+  --success: #245b40;
+  --shadow-lg: 0 24px 80px rgba(31, 25, 18, 0.11);
+  --shadow-md: 0 12px 40px rgba(31, 25, 18, 0.08);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+  --font-sans: "Instrument Sans", "Satoshi", "Manrope", sans-serif;
+}
+
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #ede7dc;
+}
+
+body {
+  background:
+    radial-gradient(circle at top, rgba(198, 165, 109, 0.18), transparent 28%),
+    linear-gradient(180deg, #f8f4ec 0%, #f2ede5 100%);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.35), transparent 22%),
+    radial-gradient(circle at 80% 10%, rgba(29, 77, 67, 0.09), transparent 18%);
+}
+
+::selection {
+  background: rgba(29, 77, 67, 0.18);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-strong: var(--muted-strong);
+  --color-line: var(--line);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --radius-lg: var(--radius-lg);
+  --radius-md: var(--radius-md);
+  --radius-sm: var(--radius-sm);
+}
+
+.glass-panel {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-md);
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(73, 62, 47, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(73, 62, 47, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.iphone-safe-top {
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+
+.iphone-safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.iphone-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(247, 241, 232, 0.78));
+  box-shadow:
+    0 30px 90px rgba(23, 18, 11, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.iphone-shell::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  z-index: 20;
+  height: 30px;
+  width: 36%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(21, 18, 14, 0.9);
+}
+
+.iphone-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 38px;
+  border: 1px solid rgba(73, 62, 47, 0.05);
+}
