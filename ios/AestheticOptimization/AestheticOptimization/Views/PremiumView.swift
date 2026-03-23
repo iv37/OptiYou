@@ -9,18 +9,35 @@ struct PremiumView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 18) {
                     VStack(alignment: .leading, spacing: 14) {
-                        ChipView(text: "Premium-ready architecture", tint: .white)
+                        ChipView(text: "Premium access", tint: AppTheme.primary)
                         Text("Unlock deeper tracking and more personalized optimization layers.")
                             .font(.system(size: 30, weight: .semibold, design: .rounded))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(AppTheme.foreground)
                         Text("Payments are not wired in, but the app already has plan gating, locked experiences, and a path to billing integration.")
                             .font(.subheadline)
-                            .foregroundStyle(.white.opacity(0.72))
+                            .foregroundStyle(AppTheme.muted)
                     }
                     .padding(22)
                     .background(
-                        LinearGradient(colors: [Color.black.opacity(0.88), AppTheme.primary.opacity(0.94)], startPoint: .topLeading, endPoint: .bottomTrailing),
-                        in: RoundedRectangle(cornerRadius: 30, style: .continuous)
+                        RoundedRectangle(cornerRadius: 30, style: .continuous)
+                            .fill(
+                                LinearGradient(
+                                    colors: [AppTheme.surfaceStrong, AppTheme.background],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                                    .stroke(AppTheme.primary.opacity(0.5), lineWidth: 1)
+                            )
+                            .overlay(alignment: .topTrailing) {
+                                Circle()
+                                    .fill(AppTheme.primary.opacity(0.18))
+                                    .frame(width: 150, height: 150)
+                                    .blur(radius: 24)
+                                    .offset(x: 36, y: -26)
+                            }
                     )
 
                     ForEach(appModel.premiumFeatures) { feature in

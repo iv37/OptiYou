@@ -48,17 +48,16 @@ struct OnboardingFlowView: View {
             .frame(height: 360)
 
             VStack(spacing: 14) {
-                Button("Start assessment") {
+                Button("Create account") {
                     withAnimation(.spring(response: 0.45, dampingFraction: 0.9)) {
-                        appModel.hasCompletedOnboarding = true
+                        appModel.authState = .unauthenticated
                     }
                 }
                 .buttonStyle(PrimaryButtonStyle())
 
-                Button("Preview demo profile") {
+                Button("Open sign in") {
                     withAnimation(.spring(response: 0.45, dampingFraction: 0.9)) {
-                        appModel.hasCompletedOnboarding = true
-                        appModel.selectedTab = .dashboard
+                        appModel.authState = .unauthenticated
                     }
                 }
                 .buttonStyle(SecondaryButtonStyle())

@@ -6,42 +6,61 @@ struct RoadmapView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 18) {
-                SectionHeaderView(
-                    eyebrow: "Improvement roadmap",
-                    title: "A realistic plan built around habits that compound.",
-                    detail: "The recommendation engine blends calculated targets, rule-based suggestions, and simulated AI summaries."
-                )
+                if appModel.hasCompletedInitialAssessment {
+                    SectionHeaderView(
+                        eyebrow: "Improvement roadmap",
+                        title: "A realistic plan built around habits that compound.",
+                        detail: "The recommendation engine blends calculated targets, rule-based suggestions, and simulated AI summaries."
+                    )
 
-                roadmapCard(title: "Top priorities", items: appModel.roadmap.topPriorities)
-                roadmapCard(title: "Daily habits", items: appModel.roadmap.dailyHabits)
-                roadmapCard(title: "Weekly habits", items: appModel.roadmap.weeklyHabits)
+                    roadmapCard(title: "Top priorities", items: appModel.activeRoadmap.topPriorities)
+                    roadmapCard(title: "Daily habits", items: appModel.activeRoadmap.dailyHabits)
+                    roadmapCard(title: "Weekly habits", items: appModel.activeRoadmap.weeklyHabits)
 
-                routineCard(title: "Morning routine", steps: appModel.roadmap.morningRoutine)
-                routineCard(title: "Night routine", steps: appModel.roadmap.nightRoutine)
+                    routineCard(title: "Morning routine", steps: appModel.activeRoadmap.morningRoutine)
+                    routineCard(title: "Night routine", steps: appModel.activeRoadmap.nightRoutine)
 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Expected timeline")
-                        .font(.headline)
-                    ForEach(appModel.roadmap.timeline) { item in
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(item.label)
-                                .font(.headline)
-                            Text(item.expectation)
-                                .font(.subheadline)
-                                .foregroundStyle(AppTheme.muted)
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Expected timeline")
+                            .font(.headline)
+                        ForEach(appModel.activeRoadmap.timeline) { item in
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(item.label)
+                                    .font(.headline)
+                                Text(item.expectation)
+                                    .font(.subheadline)
+                                    .foregroundStyle(AppTheme.muted)
+                            }
+                            .padding(14)
+                            .insetSurface()
                         }
-                        .padding(14)
-                        .background(Color.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     }
-                }
-                .padding(20)
-                .glassCard()
-
-                Text(appModel.roadmap.disclaimer)
-                    .font(.footnote)
-                    .foregroundStyle(AppTheme.muted)
-                    .padding(18)
+                    .padding(20)
                     .glassCard()
+
+                    Text(appModel.activeRoadmap.disclaimer)
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.muted)
+                        .padding(18)
+                        .glassCard()
+                } else {
+                    SectionHeaderView(
+                        eyebrow: "Improvement roadmap",
+                        title: "Recommendations appear after intake.",
+                        detail: "We hold back the plan until there is enough real user input to make it feel earned and relevant."
+                    )
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("No roadmap yet")
+                            .font(.headline)
+                            .foregroundStyle(AppTheme.foreground)
+                        Text("After the first photo set and profile baseline are complete, this tab will generate top priorities, daily habits, routines, and progress expectations.")
+                            .font(.subheadline)
+                            .foregroundStyle(AppTheme.muted)
+                    }
+                    .padding(20)
+                    .glassCard()
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
@@ -61,7 +80,7 @@ struct RoadmapView: View {
                     .foregroundStyle(AppTheme.muted)
                     .padding(14)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .insetSurface()
             }
         }
         .padding(20)
@@ -76,7 +95,7 @@ struct RoadmapView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(step.timing.uppercased())
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.muted)
+                        .foregroundStyle(AppTheme.primary)
                     Text(step.title)
                         .font(.headline)
                     Text(step.detail)
@@ -84,7 +103,7 @@ struct RoadmapView: View {
                         .foregroundStyle(AppTheme.muted)
                 }
                 .padding(14)
-                .background(Color.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .insetSurface()
             }
         }
         .padding(20)

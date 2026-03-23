@@ -35,7 +35,7 @@ struct AnalysisDetailView: View {
                             .foregroundStyle(AppTheme.muted)
                             .padding(14)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            .insetSurface()
                     }
                 }
                 .padding(20)
@@ -48,7 +48,7 @@ struct AnalysisDetailView: View {
                         VStack(alignment: .leading, spacing: 6) {
                             Text(item.timing.uppercased())
                                 .font(.caption.weight(.semibold))
-                                .foregroundStyle(AppTheme.muted)
+                                .foregroundStyle(AppTheme.primary)
                             Text(item.title)
                                 .font(.headline)
                             Text(item.detail)
@@ -57,7 +57,7 @@ struct AnalysisDetailView: View {
                         }
                         .padding(14)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .insetSurface()
                     }
                 }
                 .padding(20)

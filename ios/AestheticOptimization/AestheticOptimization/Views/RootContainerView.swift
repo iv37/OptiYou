@@ -7,12 +7,21 @@ struct RootContainerView: View {
         ZStack {
             AppBackground()
 
-            if appModel.hasCompletedOnboarding {
+            switch appModel.authState {
+            case .loading:
+                ProgressView()
+                    .controlSize(.large)
+            case .unauthenticated:
+                AuthView()
+            case .needsOnboarding:
+                ProfileSetupView()
+            case .authenticated:
                 MainTabView()
-            } else {
-                OnboardingFlowView()
             }
         }
-        .preferredColorScheme(.light)
+        .preferredColorScheme(.dark)
+        .task {
+            await appModel.restoreSessionIfNeeded()
+        }
     }
 }

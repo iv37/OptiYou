@@ -7,9 +7,14 @@ struct DashboardView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 18) {
                 heroCard
-                metricsGrid
-                prioritiesSection
-                modulesSection
+                if appModel.hasCompletedInitialAssessment {
+                    metricsSection
+                    metricsGrid
+                    prioritiesSection
+                    modulesSection
+                } else {
+                    preAssessmentState
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
@@ -20,7 +25,7 @@ struct DashboardView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 VStack(spacing: 2) {
-                    Text("Aesthetic OS")
+                    Text("OptiYou")
                         .font(.caption)
                         .foregroundStyle(AppTheme.muted)
                     Text("Steady progress")
@@ -35,40 +40,125 @@ struct DashboardView: View {
 
     private var heroCard: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ChipView(text: "Current dashboard", tint: .white)
-            Text("Your current priorities are consistency, calmer skin, and sharper structure.")
+            ChipView(text: appModel.hasCompletedInitialAssessment ? "Current dashboard" : "Before first evaluation", tint: .white)
+            Text(appModel.hasCompletedInitialAssessment ? "Your current priorities are consistency, calmer skin, and sharper structure." : appModel.personalizedDashboardHeadline)
                 .font(.system(size: 30, weight: .semibold, design: .rounded))
                 .foregroundStyle(.white)
-            Text("The current plan favors habits that improve presentation steadily: cleaner recovery, less routine friction, and better framing through grooming.")
+            Text(appModel.hasCompletedInitialAssessment ? "The current plan favors habits that improve presentation steadily: cleaner recovery, less routine friction, and better framing through grooming." : appModel.personalizedDashboardDetail)
                 .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.72))
             HStack(spacing: 12) {
-                Button("Upload new scan") {
+                Button(appModel.hasCompletedInitialAssessment ? "Upload new scan" : "Start first assessment") {
                     appModel.selectedTab = .upload
                 }
                 .buttonStyle(PrimaryButtonStyle())
 
-                Button("Open plan") {
-                    appModel.selectedTab = .plan
+                if appModel.hasCompletedInitialAssessment {
+                    Button("Open plan") {
+                        appModel.selectedTab = .plan
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                } else if appModel.isUsingDevBypass {
+                    Button("Dev results") {
+                        appModel.completeAssessment()
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
                 }
-                .buttonStyle(SecondaryButtonStyle())
             }
             .foregroundStyle(AppTheme.foreground)
             .tint(.white)
         }
         .padding(22)
         .background(
-            LinearGradient(colors: [Color.black.opacity(0.86), AppTheme.primary.opacity(0.92)], startPoint: .topLeading, endPoint: .bottomTrailing),
-            in: RoundedRectangle(cornerRadius: 30, style: .continuous)
+            RoundedRectangle(cornerRadius: 30, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            AppTheme.surfaceStrong,
+                            AppTheme.background
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30, style: .continuous)
+                        .stroke(AppTheme.border, lineWidth: 1)
+                )
+                .overlay(alignment: .topTrailing) {
+                    Circle()
+                        .fill(AppTheme.primary.opacity(0.18))
+                        .frame(width: 120, height: 120)
+                        .blur(radius: 20)
+                        .offset(x: 28, y: -22)
+                }
         )
+    }
+
+    private var metricsSection: some View {
+        SectionHeaderView(
+            eyebrow: "Baseline",
+            title: "Current baseline and plan targets",
+            detail: "Each card shows what the user reported or calculated today, then the target the current plan is built around."
+        )
+    }
+
+    private var preAssessmentState: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            SectionHeaderView(
+                eyebrow: "Getting started",
+                title: "No stats yet",
+                detail: "The app stays intentionally blank on scores until the first photo set is completed, but the experience is already being shaped by onboarding."
+            )
+
+            VStack(alignment: .leading, spacing: 12) {
+                emptyStep(number: "01", title: "Complete baseline profile", detail: "Age, height, weight, goals, skin profile, hair profile, and lifestyle habits.")
+                emptyStep(number: "02", title: "Upload face scans next", detail: "Front face, side face, skin close-up, and hairline photos under consistent lighting.")
+                emptyStep(number: "03", title: "Unlock deeper recommendations", detail: "That is when we reveal tailored modules, roadmap items, and progress history.")
+            }
+            .padding(20)
+            .glassCard()
+
+            if appModel.isUsingDevBypass {
+                Button("Dev: generate scan results") {
+                    appModel.completeAssessment()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+            }
+
+            if !appModel.activePriorities.isEmpty {
+                prioritiesSection
+            }
+        }
+    }
+
+    private func emptyStep(number: String, title: String, detail: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Text(number)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(AppTheme.primary)
+                .frame(width: 34, height: 34)
+                .background(AppTheme.accent.opacity(0.16), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(AppTheme.foreground)
+                Text(detail)
+                    .font(.subheadline)
+                    .foregroundStyle(AppTheme.muted)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .insetSurface()
     }
 
     private var metricsGrid: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-            MetricTileView(title: "Estimated body fat", value: appModel.bodyFatSummary, detail: "Calculated from the current profile and used for calorie and macro guidance.")
-            MetricTileView(title: "Sleep average", value: String(format: "%.1fh", appModel.profile.sleepHours), detail: "Recovery is the main appearance multiplier in the current plan.")
-            MetricTileView(title: "Hydration", value: String(format: "%.1fL", appModel.profile.hydrationLiters), detail: "Raising consistency here should improve skin calmness and training recovery.")
-            MetricTileView(title: "Exercise frequency", value: "\(appModel.profile.exerciseDays) days", detail: "Strong baseline. Nutrition precision is now more important than extra sessions.")
+            MetricTileView(title: "Body fat", current: appModel.bodyFatSummary, target: appModel.bodyFatTargetText, detail: appModel.bodyFatDetail)
+            MetricTileView(title: "Sleep", current: String(format: "%.1f h", appModel.effectiveSleepHours), target: appModel.sleepTargetText, detail: "Nightly baseline")
+            MetricTileView(title: "Water", current: appModel.hydrationCurrentText, target: appModel.hydrationTargetText, detail: "Daily baseline")
+            MetricTileView(title: "Training", current: "\(appModel.effectiveExerciseDays) days", target: appModel.exerciseTargetText, detail: "Weekly baseline")
         }
     }
 
@@ -80,7 +170,7 @@ struct DashboardView: View {
                 detail: "Calculated targets, rule-based heuristics, and simulated AI summaries work together in a single flow."
             )
 
-            ForEach(appModel.priorities) { item in
+            ForEach(appModel.activePriorities) { item in
                 VStack(alignment: .leading, spacing: 10) {
                     ChipView(text: item.module, tint: AppTheme.primary)
                     Text(item.title)
@@ -105,7 +195,7 @@ struct DashboardView: View {
                 detail: "Each module isolates the main opportunities so the dashboard stays focused while still giving you drill-down depth."
             )
 
-            ForEach(appModel.modules) { module in
+            ForEach(appModel.activeModules) { module in
                 Button {
                     appModel.selectedModule = module
                 } label: {
@@ -134,7 +224,7 @@ struct DashboardView: View {
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.white.opacity(0.65), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                                .insetSurface()
                         }
                     }
                     .padding(18)

@@ -25,6 +25,13 @@
 		A10000000000000000000010 /* PremiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* PremiumView.swift */; };
 		A10000000000000000000011 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* Assets.xcassets */; };
 		A10000000000000000000012 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* Preview Assets.xcassets */; };
+		A10000000000000000000013 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000015 /* KeychainHelper.swift */; };
+		A10000000000000000000014 /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* SupabaseConfig.swift */; };
+		A10000000000000000000015 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000017 /* AuthService.swift */; };
+		A10000000000000000000016 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000018 /* ProfileService.swift */; };
+		A10000000000000000000017 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000019 /* AuthView.swift */; };
+		A10000000000000000000018 /* ProfileSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001A /* ProfileSetupView.swift */; };
+		A10000000000000000000019 /* RecommendationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001B /* RecommendationEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +55,13 @@
 		A20000000000000000000012 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A20000000000000000000013 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A20000000000000000000014 /* AestheticOptimization.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = AestheticOptimization.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000015 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		A20000000000000000000016 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
+		A20000000000000000000017 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		A20000000000000000000018 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		A20000000000000000000019 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		A2000000000000000000001A /* ProfileSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSetupView.swift; sourceTree = "<group>"; };
+		A2000000000000000000001B /* RecommendationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +119,11 @@
 			children = (
 				A20000000000000000000003 /* MockDataService.swift */,
 				A20000000000000000000005 /* AppModel.swift */,
+				A20000000000000000000015 /* KeychainHelper.swift */,
+				A20000000000000000000016 /* SupabaseConfig.swift */,
+				A20000000000000000000017 /* AuthService.swift */,
+				A20000000000000000000018 /* ProfileService.swift */,
+				A2000000000000000000001B /* RecommendationEngine.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -121,11 +140,13 @@
 			isa = PBXGroup;
 			children = (
 				A20000000000000000000007 /* RootContainerView.swift */,
+				A4000000000000000000000C /* Auth */,
 				A40000000000000000000009 /* Onboarding */,
 				A20000000000000000000009 /* MainTabView.swift */,
 				A2000000000000000000000A /* DashboardView.swift */,
 				A2000000000000000000000B /* UploadFlowView.swift */,
 				A4000000000000000000000A /* Analysis */,
+				A4000000000000000000000D /* Profile */,
 				A2000000000000000000000D /* ProgressViewScreen.swift */,
 				A2000000000000000000000E /* RoadmapView.swift */,
 				A2000000000000000000000F /* SettingsView.swift */,
@@ -165,6 +186,22 @@
 				A20000000000000000000006 /* SharedComponents.swift */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		A4000000000000000000000C /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000019 /* AuthView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		A4000000000000000000000D /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000001A /* ProfileSetupView.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,6 +290,13 @@
 				A1000000000000000000000E /* RoadmapView.swift in Sources */,
 				A1000000000000000000000F /* SettingsView.swift in Sources */,
 				A10000000000000000000010 /* PremiumView.swift in Sources */,
+				A10000000000000000000013 /* KeychainHelper.swift in Sources */,
+				A10000000000000000000014 /* SupabaseConfig.swift in Sources */,
+				A10000000000000000000015 /* AuthService.swift in Sources */,
+				A10000000000000000000016 /* ProfileService.swift in Sources */,
+				A10000000000000000000017 /* AuthView.swift in Sources */,
+				A10000000000000000000018 /* ProfileSetupView.swift in Sources */,
+				A10000000000000000000019 /* RecommendationEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

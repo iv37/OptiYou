@@ -121,3 +121,31 @@ Full schema: [`prisma/schema.prisma`](/Users/ivan/Documents/Playground 3/prisma/
 ## Current mocked vs real
 - Real architecture: routes, schema, typed services, premium gating structure, progress charting, validation contracts.
 - Mocked or simulated: auth session wiring, signed upload flow, persistent DB reads/writes, CV/ML analysis inference, billing.
+
+## Native auth setup
+- The native iPhone app now includes Supabase-backed signup/login, Keychain session storage, multi-step onboarding, and protected routes in `ios/AestheticOptimization`.
+- Auth screens live in [AuthView.swift](/Users/ivan/Documents/Playground 3/ios/AestheticOptimization/AestheticOptimization/Views/Auth/AuthView.swift).
+- Root route protection lives in [RootContainerView.swift](/Users/ivan/Documents/Playground 3/ios/AestheticOptimization/AestheticOptimization/Views/RootContainerView.swift).
+- Session logic lives in [AuthService.swift](/Users/ivan/Documents/Playground 3/ios/AestheticOptimization/AestheticOptimization/Services/AuthService.swift) and [KeychainHelper.swift](/Users/ivan/Documents/Playground 3/ios/AestheticOptimization/AestheticOptimization/Services/KeychainHelper.swift).
+- Profile persistence lives in [ProfileService.swift](/Users/ivan/Documents/Playground 3/ios/AestheticOptimization/AestheticOptimization/Services/ProfileService.swift).
+- Native onboarding flow lives in [ProfileSetupView.swift](/Users/ivan/Documents/Playground 3/ios/AestheticOptimization/AestheticOptimization/Views/Profile/ProfileSetupView.swift).
+- Database schema is in [schema.sql](/Users/ivan/Documents/Playground 3/supabase/schema.sql).
+
+## Native run steps
+1. Create a Supabase project.
+2. In the Supabase SQL editor, run [schema.sql](/Users/ivan/Documents/Playground 3/supabase/schema.sql).
+3. Open [Info.plist](/Users/ivan/Documents/Playground 3/ios/AestheticOptimization/AestheticOptimization/Info.plist) and set:
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY`
+4. Open [AestheticOptimization.xcodeproj](/Users/ivan/Documents/Playground 3/ios/AestheticOptimization/AestheticOptimization.xcodeproj) in Xcode.
+5. Run the `AestheticOptimization` scheme on an iPhone simulator.
+
+## Example current user fetch
+- After login, the app restores the stored session from Keychain and calls Supabase `GET /auth/v1/user`.
+- The fetched current user email is shown in Settings as the working example of authenticated user retrieval.
+
+## Native onboarding flow
+- Steps: `profile`, `goals`, `lifestyle`, `review`
+- UX: swipeable `TabView`, progress indicator, back/next buttons, validation on every step
+- Persistence: saves the completed onboarding payload into `profiles`
+- Gating: the dashboard is not accessible until `onboarding_completed = true`

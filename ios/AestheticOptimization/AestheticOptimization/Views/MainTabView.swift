@@ -46,8 +46,33 @@ struct MainTabView: View {
             .tag(AppTab.settings)
         }
         .tint(AppTheme.primary)
+        .toolbarBackground(AppTheme.backgroundElevated, for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
         .sheet(isPresented: $appModel.showingPremium) {
             PremiumView()
         }
+        .onAppear(perform: configureChrome)
+    }
+
+    private func configureChrome() {
+        let tabAppearance = UITabBarAppearance()
+        tabAppearance.configureWithOpaqueBackground()
+        tabAppearance.backgroundColor = UIColor(AppTheme.backgroundElevated)
+        tabAppearance.shadowColor = UIColor(AppTheme.border)
+        tabAppearance.stackedLayoutAppearance.selected.iconColor = UIColor(AppTheme.primary)
+        tabAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(AppTheme.primary)]
+        tabAppearance.stackedLayoutAppearance.normal.iconColor = UIColor(AppTheme.muted)
+        tabAppearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(AppTheme.muted)]
+        UITabBar.appearance().standardAppearance = tabAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabAppearance
+
+        let navAppearance = UINavigationBarAppearance()
+        navAppearance.configureWithOpaqueBackground()
+        navAppearance.backgroundColor = UIColor(AppTheme.background)
+        navAppearance.shadowColor = UIColor(AppTheme.border)
+        navAppearance.titleTextAttributes = [.foregroundColor: UIColor(AppTheme.foreground)]
+        navAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(AppTheme.foreground)]
+        UINavigationBar.appearance().standardAppearance = navAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navAppearance
     }
 }

@@ -6,33 +6,52 @@ struct ProgressViewScreen: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 18) {
-                SectionHeaderView(
-                    eyebrow: "Progress tracking",
-                    title: "Your trendline is moving in the right direction.",
-                    detail: "Progress is saved as dated snapshots so you can compare routines, analysis outcomes, and key metrics over time."
-                )
+                if appModel.hasCompletedInitialAssessment {
+                    SectionHeaderView(
+                        eyebrow: "Progress tracking",
+                        title: "Your trendline is moving in the right direction.",
+                        detail: "Progress is saved as dated snapshots so you can compare routines, analysis outcomes, and key metrics over time."
+                    )
 
-                ProgressChartCard(entries: appModel.progress)
+                    ProgressChartCard(entries: appModel.progress)
 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Saved history")
-                        .font(.headline)
-                    ForEach(appModel.progress) { entry in
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text(entry.dateLabel)
-                                .font(.headline)
-                            HStack {
-                                ProgressPill(label: "Skin", value: entry.skinClarity)
-                                ProgressPill(label: "Grooming", value: entry.groomingConsistency)
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Saved history")
+                            .font(.headline)
+                        ForEach(appModel.progress) { entry in
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text(entry.dateLabel)
+                                    .font(.headline)
+                                HStack {
+                                    ProgressPill(label: "Skin", value: entry.skinClarity)
+                                    ProgressPill(label: "Grooming", value: entry.groomingConsistency)
+                                }
+                                HStack {
+                                    ProgressPill(label: "Body", value: entry.bodyComposition)
+                                    ProgressPill(label: "Hydration", value: entry.hydration)
+                                }
                             }
-                            HStack {
-                                ProgressPill(label: "Body", value: entry.bodyComposition)
-                                ProgressPill(label: "Hydration", value: entry.hydration)
-                            }
+                            .padding(16)
+                            .glassCard()
                         }
-                        .padding(16)
-                        .glassCard()
                     }
+                } else {
+                    SectionHeaderView(
+                        eyebrow: "Progress tracking",
+                        title: "Progress unlocks after the first evaluation.",
+                        detail: "We need one complete scan set and profile baseline before it makes sense to graph anything."
+                    )
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Nothing to compare yet")
+                            .font(.headline)
+                            .foregroundStyle(AppTheme.foreground)
+                        Text("Once the first evaluation is complete, this tab will show saved history, trend lines, and dated metric snapshots instead of empty placeholders.")
+                            .font(.subheadline)
+                            .foregroundStyle(AppTheme.muted)
+                    }
+                    .padding(20)
+                    .glassCard()
                 }
             }
             .padding(.horizontal, 16)
@@ -60,7 +79,7 @@ private struct ProgressPill: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white.opacity(0.68), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .insetSurface()
     }
 }
 
@@ -78,7 +97,11 @@ private struct ProgressChartCard: View {
 
                 ZStack(alignment: .bottomLeading) {
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(Color.white.opacity(0.42))
+                        .fill(AppTheme.surfaceInset)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .stroke(AppTheme.border, lineWidth: 1)
+                        )
 
                     Path { path in
                         for (index, entry) in entries.enumerated() {

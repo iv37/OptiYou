@@ -8,11 +8,11 @@ struct SectionHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(eyebrow.uppercased())
-                .font(.caption.weight(.semibold))
-                .tracking(1.2)
-                .foregroundStyle(AppTheme.muted)
+                .font(.caption2.weight(.bold))
+                .tracking(1.8)
+                .foregroundStyle(AppTheme.primary)
             Text(title)
-                .font(.system(size: 28, weight: .semibold, design: .rounded))
+                .font(.system(size: 30, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppTheme.foreground)
             Text(detail)
                 .font(.subheadline)
@@ -24,24 +24,39 @@ struct SectionHeaderView: View {
 
 struct MetricTileView: View {
     let title: String
-    let value: String
+    let current: String
+    let target: String
     let detail: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 14) {
             Text(title)
-                .font(.caption)
-                .foregroundStyle(AppTheme.muted)
-            Text(value)
-                .font(.system(size: 28, weight: .semibold, design: .rounded))
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(AppTheme.foreground)
+                .lineLimit(1)
+            Text(current)
+                .font(.system(size: 30, weight: .semibold, design: .rounded))
+                .foregroundStyle(title == "Body fat" ? AppTheme.primary : AppTheme.foreground)
+                .lineLimit(1)
+                .minimumScaleFactor(0.78)
+            HStack(alignment: .center, spacing: 6) {
+                Text("Target:")
+                    .font(.caption2.weight(.bold))
+                    .tracking(0.8)
+                    .foregroundStyle(AppTheme.muted)
+                Text(target)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.foreground)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.78)
+            }
             Text(detail)
                 .font(.caption)
                 .foregroundStyle(AppTheme.muted)
-                .fixedSize(horizontal: false, vertical: true)
+                .lineLimit(1)
         }
         .padding(18)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 134, alignment: .topLeading)
         .glassCard()
     }
 }
@@ -55,7 +70,11 @@ struct ChipView: View {
             .font(.caption.weight(.semibold))
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
-            .background(tint.opacity(0.14), in: Capsule())
+            .background(tint.opacity(0.12), in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(tint.opacity(0.4), lineWidth: 1)
+            )
             .foregroundStyle(tint)
     }
 }
@@ -67,8 +86,23 @@ struct PrimaryButtonStyle: ButtonStyle {
             .foregroundStyle(Color.white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(AppTheme.primary.opacity(configuration.isPressed ? 0.88 : 1), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .scaleEffect(configuration.isPressed ? 0.99 : 1)
+            .background(
+                LinearGradient(
+                    colors: [
+                        AppTheme.primaryHover.opacity(configuration.isPressed ? 0.92 : 1),
+                        AppTheme.primary.opacity(configuration.isPressed ? 0.88 : 1)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(AppTheme.primaryHover.opacity(0.45), lineWidth: 1)
+            )
+            .shadow(color: AppTheme.primary.opacity(0.16), radius: 10, y: 6)
+            .animation(.easeOut(duration: 0.18), value: configuration.isPressed)
     }
 }
 
@@ -79,10 +113,11 @@ struct SecondaryButtonStyle: ButtonStyle {
             .foregroundStyle(AppTheme.foreground)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(Color.white.opacity(configuration.isPressed ? 0.92 : 0.68), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .background(AppTheme.surfaceStrong.opacity(configuration.isPressed ? 0.95 : 1), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color.white.opacity(0.55), lineWidth: 1)
+                    .stroke(AppTheme.border, lineWidth: 1)
             )
+            .animation(.easeOut(duration: 0.18), value: configuration.isPressed)
     }
 }

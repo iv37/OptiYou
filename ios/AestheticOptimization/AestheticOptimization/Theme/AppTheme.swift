@@ -1,33 +1,53 @@
 import SwiftUI
 
 enum AppTheme {
-    static let background = Color(red: 0.96, green: 0.93, blue: 0.89)
-    static let surface = Color.white.opacity(0.72)
-    static let surfaceStrong = Color.white.opacity(0.90)
-    static let foreground = Color(red: 0.10, green: 0.08, blue: 0.06)
-    static let muted = Color(red: 0.43, green: 0.40, blue: 0.36)
-    static let primary = Color(red: 0.11, green: 0.30, blue: 0.26)
-    static let accent = Color(red: 0.78, green: 0.65, blue: 0.43)
-    static let success = Color(red: 0.14, green: 0.36, blue: 0.25)
-    static let danger = Color(red: 0.61, green: 0.30, blue: 0.25)
+    static let background = Color(hex: "#0B0C10")
+    static let backgroundElevated = Color(hex: "#0F1116")
+    static let surface = Color(hex: "#111317")
+    static let surfaceStrong = Color(hex: "#171A20")
+    static let surfaceInset = Color(hex: "#15181D")
+    static let border = Color(hex: "#2A2E35")
+    static let foreground = Color(hex: "#F5F5F5")
+    static let muted = Color(hex: "#A1A1AA")
+    static let primary = Color(hex: "#4C1D95")
+    static let primaryHover = Color(hex: "#3B0764")
+    static let accent = Color(hex: "#4C1D95")
+    static let success = Color(hex: "#059669")
+    static let danger = Color(hex: "#8F4B4B")
+    static let shadow = Color.black.opacity(0.34)
 }
 
 struct AppBackground: View {
     var body: some View {
-        LinearGradient(
-            colors: [
-                Color(red: 0.98, green: 0.96, blue: 0.92),
-                AppTheme.background
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .overlay(alignment: .topTrailing) {
-            Circle()
-                .fill(AppTheme.accent.opacity(0.14))
-                .frame(width: 220, height: 220)
-                .blur(radius: 30)
-                .offset(x: 70, y: -90)
+        ZStack {
+            LinearGradient(
+                colors: [
+                    AppTheme.backgroundElevated,
+                    AppTheme.background
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+
+            RadialGradient(
+                colors: [
+                    AppTheme.primary.opacity(0.10),
+                    Color.clear
+                ],
+                center: .topTrailing,
+                startRadius: 10,
+                endRadius: 280
+            )
+            .offset(x: 60, y: -120)
+
+            LinearGradient(
+                colors: [
+                    Color.white.opacity(0.015),
+                    Color.clear
+                ],
+                startPoint: .topLeading,
+                endPoint: .center
+            )
         }
         .ignoresSafeArea()
     }
@@ -36,17 +56,86 @@ struct AppBackground: View {
 struct GlassCardModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .stroke(Color.white.opacity(0.55), lineWidth: 1)
+            .background(
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(AppTheme.surface)
             )
-            .shadow(color: Color.black.opacity(0.08), radius: 18, y: 10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .stroke(AppTheme.border, lineWidth: 1)
+            )
+            .shadow(color: AppTheme.shadow, radius: 22, y: 14)
+    }
+}
+
+struct InsetSurfaceModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(AppTheme.surfaceInset)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(AppTheme.border.opacity(0.95), lineWidth: 1)
+            )
+    }
+}
+
+struct LuxuryInputModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(.horizontal, 14)
+            .padding(.vertical, 14)
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(AppTheme.surfaceInset)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(AppTheme.border, lineWidth: 1)
+            )
+            .foregroundStyle(AppTheme.foreground)
     }
 }
 
 extension View {
     func glassCard() -> some View {
         modifier(GlassCardModifier())
+    }
+
+    func insetSurface() -> some View {
+        modifier(InsetSurfaceModifier())
+    }
+
+    func luxuryInput() -> some View {
+        modifier(LuxuryInputModifier())
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3:
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6:
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8:
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
 }
