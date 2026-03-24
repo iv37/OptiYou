@@ -9,11 +9,24 @@ struct ProgressViewScreen: View {
                 if appModel.hasCompletedInitialAssessment {
                     SectionHeaderView(
                         eyebrow: "Progress tracking",
-                        title: "Your trendline is moving in the right direction.",
-                        detail: "Progress is saved as dated snapshots so you can compare routines, analysis outcomes, and key metrics over time."
+                        title: "See what is improving over time.",
+                        detail: "Clear labels and simple visuals keep trend tracking useful without making the screen feel busy."
                     )
 
                     ProgressChartCard(entries: appModel.progress)
+
+                    VStack(alignment: .leading, spacing: 14) {
+                        Text("Current trend")
+                            .font(.headline)
+                            .foregroundStyle(AppTheme.foreground)
+
+                        TrendBarRow(label: "Skin clarity", value: appModel.progress.last?.skinClarity ?? 0, status: trendStatus(for: \.skinClarity))
+                        TrendBarRow(label: "Grooming", value: appModel.progress.last?.groomingConsistency ?? 0, status: trendStatus(for: \.groomingConsistency))
+                        TrendBarRow(label: "Body", value: appModel.progress.last?.bodyComposition ?? 0, status: trendStatus(for: \.bodyComposition))
+                        TrendBarRow(label: "Hydration", value: appModel.progress.last?.hydration ?? 0, status: trendStatus(for: \.hydration))
+                    }
+                    .padding(20)
+                    .glassCard()
 
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Saved history")
@@ -42,16 +55,7 @@ struct ProgressViewScreen: View {
                         detail: "We need one complete scan set and profile baseline before it makes sense to graph anything."
                     )
 
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Nothing to compare yet")
-                            .font(.headline)
-                            .foregroundStyle(AppTheme.foreground)
-                        Text("Once the first evaluation is complete, this tab will show saved history, trend lines, and dated metric snapshots instead of empty placeholders.")
-                            .font(.subheadline)
-                            .foregroundStyle(AppTheme.muted)
-                    }
-                    .padding(20)
-                    .glassCard()
+                    EmptyStateCard(title: "Nothing to compare yet", detail: "Once the first evaluation is complete, this tab will show history, trend lines, and dated metric snapshots.")
                 }
             }
             .padding(.horizontal, 16)
@@ -60,6 +64,18 @@ struct ProgressViewScreen: View {
         }
         .navigationTitle("Progress")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private extension ProgressViewScreen {
+    func trendStatus(for keyPath: KeyPath<ProgressEntry, Double>) -> String {
+        guard let current = appModel.progress.last?[keyPath: keyPath] else { return "Stable" }
+        guard appModel.progress.count > 1 else { return current >= 60 ? "Improving" : "Needs attention" }
+        let previous = appModel.progress[appModel.progress.count - 2][keyPath: keyPath]
+        let delta = current - previous
+        if delta >= 3 { return "Improving" }
+        if delta <= -3 { return "Needs attention" }
+        return "Stable"
     }
 }
 

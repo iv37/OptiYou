@@ -9,16 +9,16 @@ struct RoadmapView: View {
                 if appModel.hasCompletedInitialAssessment {
                     SectionHeaderView(
                         eyebrow: "Improvement roadmap",
-                        title: "A realistic plan built around habits that compound.",
-                        detail: "The recommendation engine blends calculated targets, rule-based suggestions, and simulated AI summaries."
+                        title: "A calm plan built around what matters most.",
+                        detail: "Based on your inputs, the roadmap keeps routines structured, practical, and easy to follow."
                     )
 
                     roadmapCard(title: "Top priorities", items: appModel.activeRoadmap.topPriorities)
                     roadmapCard(title: "Daily habits", items: appModel.activeRoadmap.dailyHabits)
                     roadmapCard(title: "Weekly habits", items: appModel.activeRoadmap.weeklyHabits)
 
-                    routineCard(title: "Morning routine", steps: appModel.activeRoadmap.morningRoutine)
-                    routineCard(title: "Night routine", steps: appModel.activeRoadmap.nightRoutine)
+                    RoutineListCard(title: "AM routine", subtitle: "A simple morning setup that supports skin, energy, and consistency.", steps: appModel.activeRoadmap.morningRoutine)
+                    RoutineListCard(title: "PM routine", subtitle: "A quiet evening sequence designed to protect recovery and keep routines minimal.", steps: appModel.activeRoadmap.nightRoutine)
 
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Expected timeline")
@@ -50,16 +50,7 @@ struct RoadmapView: View {
                         detail: "We hold back the plan until there is enough real user input to make it feel earned and relevant."
                     )
 
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("No roadmap yet")
-                            .font(.headline)
-                            .foregroundStyle(AppTheme.foreground)
-                        Text("After the first photo set and profile baseline are complete, this tab will generate top priorities, daily habits, routines, and progress expectations.")
-                            .font(.subheadline)
-                            .foregroundStyle(AppTheme.muted)
-                    }
-                    .padding(20)
-                    .glassCard()
+                    EmptyStateCard(title: "No roadmap yet", detail: "After the first photo set and profile baseline are complete, this tab will generate top priorities, routines, and progress expectations.")
                 }
             }
             .padding(.horizontal, 16)
@@ -87,26 +78,4 @@ struct RoadmapView: View {
         .glassCard()
     }
 
-    private func routineCard(title: String, steps: [RoutineStep]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(.headline)
-            ForEach(steps) { step in
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(step.timing.uppercased())
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.primary)
-                    Text(step.title)
-                        .font(.headline)
-                    Text(step.detail)
-                        .font(.subheadline)
-                        .foregroundStyle(AppTheme.muted)
-                }
-                .padding(14)
-                .insetSurface()
-            }
-        }
-        .padding(20)
-        .glassCard()
-    }
 }
